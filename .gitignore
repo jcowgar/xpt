@@ -1,3 +1,5 @@
 .xpt.xojo_uistate
 xpt.debug
 *obsolete*
+.DS_Store
+xojo-option-parser
