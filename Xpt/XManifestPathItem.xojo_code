@@ -9,11 +9,41 @@ Inherits Xpt.XManifestItem
 		  
 		  Self.Name = parts(0)
 		  Self.Path = parts(1)
-		  Self.ParentId = parts(2)
-		  Self.Id = parts(3)
+		  Self.Id = parts(2)
+		  Self.ParentId = parts(3)
+		  Self.UnknownOne = parts(4)
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function ToString() As String
+		  //
+		  
+		  dim result() as String
+		  
+		  //
+		  // Convert myself first
+		  //
+		  
+		  dim values() as String = Array(Name, Path, Id, ParentId, UnknownOne)
+		  result.Append Key + "=" + Join(values, ";")
+		  
+		  //
+		  // Convert all my children
+		  //
+		  
+		  for i as Integer = 0 to Child.Ubound
+		    result.Append Child(i).ToString
+		  next
+		  
+		  return Join(result, EndOfLine)
+		End Function
+	#tag EndMethod
+
+
+	#tag Property, Flags = &h0
+		Child() As Xpt.XManifestItem
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		Id As String
@@ -31,14 +61,29 @@ Inherits Xpt.XManifestItem
 		Path As String
 	#tag EndProperty
 
+	#tag Property, Flags = &h0
+		UnknownOne As String
+	#tag EndProperty
+
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Id"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Key"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -56,10 +101,11 @@ Inherits Xpt.XManifestItem
 		#tag ViewProperty
 			Name="ParentId"
 			Group="Behavior"
-			Type="Integer"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Raw"
+			Name="Path"
 			Group="Behavior"
 			Type="String"
 		#tag EndViewProperty
@@ -75,6 +121,12 @@ Inherits Xpt.XManifestItem
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Value"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

@@ -7,6 +7,12 @@ Protected Class XManifestItem
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function ToString() As String
+		  return Key + "=" + Value
+		End Function
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
 		Key As String
@@ -24,6 +30,12 @@ Protected Class XManifestItem
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Key"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -55,6 +67,7 @@ Protected Class XManifestItem
 			Name="Value"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

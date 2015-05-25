@@ -22,7 +22,11 @@ Protected Class XManifest
 		  // Construct a new XManifest from the contents of `fh`
 		  //
 		  
-		  dim manifest as new XManifest
+		  dim manifest as new Xpt.XManifest
+		  
+		  //
+		  // Parse the manifest file
+		  //
 		  
 		  dim tis as TextInputStream = TextInputStream.Open(fh)
 		  
@@ -69,7 +73,41 @@ Protected Class XManifest
 		  wend
 		  
 		  tis.Close
+		  
+		  //
+		  // Nest items that can be nested
+		  //
+		  
+		  for i as Integer = manifest.Child.Ubound downto 0
+		    dim item as Xpt.XManifestItem = manifest.Child(i)
+		    
+		    select case item
+		    case isa XManifestPathItem
+		      dim pathItem as Xpt.XManifestPathItem = Xpt.XManifestPathItem(item)
+		      dim parentItem as Xpt.XManifestPathItem = manifest.IdStore.Lookup(pathItem.ParentId, nil)
+		      
+		      if parentItem is nil then
+		        continue
+		      end if
+		      
+		      parentItem.Child.Append pathItem
+		      
+		      manifest.Child.Remove i
+		    end select
+		  next
+		  
+		  return manifest
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Save(fh as FolderItem)
+		  break
+		  
+		  for i as Integer = 0 to Child.Ubound
+		    Print Child(i).ToString
+		  next
+		End Sub
 	#tag EndMethod
 
 

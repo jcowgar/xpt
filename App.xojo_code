@@ -15,7 +15,7 @@ Inherits ConsoleApplication
 		  
 		  //
 		  // Parse our command line options
-		  // 
+		  //
 		  
 		  dim parser as new OptionParser
 		  parser.ExtrasRequired = 1
@@ -91,7 +91,6 @@ Inherits ConsoleApplication
 		  if commentToLoc then
 		    NotImplemented(kOptionCommentToLoc)
 		  end if
-		  
 		End Function
 	#tag EndEvent
 
