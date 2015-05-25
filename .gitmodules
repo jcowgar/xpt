@@ -1,0 +1,3 @@
+[submodule "xojo-option-parser"]
+	path = xojo-option-parser
+	url = https://jcowgar@github.com/jcowgar/xojo-option-parser.git
