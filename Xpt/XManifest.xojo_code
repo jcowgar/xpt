@@ -17,7 +17,7 @@ Protected Class XManifest
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Sub Parse(fh as FolderItem)
+		 Shared Function Parse(fh as FolderItem) As Xpt.XManifest
 		  //
 		  // Construct a new XManifest from the contents of `fh`
 		  //
@@ -69,7 +69,7 @@ Protected Class XManifest
 		  wend
 		  
 		  tis.Close
-		End Sub
+		End Function
 	#tag EndMethod
 
 
@@ -83,11 +83,6 @@ Protected Class XManifest
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="Child()"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
