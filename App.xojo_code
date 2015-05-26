@@ -11,6 +11,7 @@ Inherits ConsoleApplication
 		  const kOptionSync = "sync"
 		  const kOptionCountLoc = "count-loc"
 		  const kOptionCommentToLoc = "comment-to-loc"
+		  const kOptionRecursive = "recursive"
 		  const kOptionSimulate = "simulate"
 		  const kOptionVerbose = "verbose"
 		  
@@ -29,6 +30,7 @@ Inherits ConsoleApplication
 		  parser.AddOption new Option("", kOptionSync, "Synchronize items from various projects", Option.OptionType.Boolean)
 		  parser.AddOption new Option("", kOptionCountLoc, "Count the number of lines of code", Option.OptionType.Boolean)
 		  parser.AddOption new Option("", kOptionCommentToLoc, "Report on the comment to line of code ration", Option.OptionType.Boolean)
+		  parser.AddOption new Option("", kOptionRecursive, "Perform the operation recursively", Option.OptionType.Boolean)
 		  parser.AddOption new Option("", kOptionSimulate, "Display the resulting manifest instead of saving it to disk", Option.OptionType.Boolean)
 		  parser.AddOption new Option("", kOptionVerbose, "Produce verbose output", Option.OptionType.Boolean)
 		  parser.Parse(args)
@@ -47,6 +49,7 @@ Inherits ConsoleApplication
 		  dim countLoc as Boolean = parser.BooleanValue(kOptionCountLoc, False)
 		  dim commentToLoc as Boolean = parser.BooleanValue(kOptionCommentToLoc, False)
 		  
+		  Recursive = parser.BooleanValue(kOptionRecursive, False)
 		  Simulate = parser.BooleanValue(kOptionSimulate, False)
 		  Verbose = parser.BooleanValue(kOptionVerbose, False)
 		  
@@ -148,7 +151,7 @@ Inherits ConsoleApplication
 		    Quit kErrorSort
 		  end if
 		  
-		  rootItem.Sort()
+		  rootItem.Sort(Recursive)
 		End Sub
 	#tag EndMethod
 
@@ -305,10 +308,14 @@ Inherits ConsoleApplication
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
+		Protected Recursive As Boolean
+	#tag EndProperty
+
 	#tag Property, Flags = &h1
 		Protected Simulate As Boolean
 	#tag EndProperty
 
+	#tag Property, Flags = &h1
 		Protected Verbose As Boolean
 	#tag EndProperty
 
