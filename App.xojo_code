@@ -109,6 +109,10 @@ Inherits ConsoleApplication
 		  end if
 		  
 		  dim saveFh as FolderItem = if(Simulate, nil, fh)
+		  if not Simulate then
+		    Print "Saving manifest: " + saveFh.Name
+		  end if
+		  
 		  Manifest.Save(saveFh)
 		End Function
 	#tag EndEvent
@@ -134,6 +138,8 @@ Inherits ConsoleApplication
 		  
 		  for each item as XManifestItem in Manifest
 		    if item.IsContainer then
+		      Print "Sorting recursively: " + item.Name
+		      
 		      item.Sort(True)
 		    end if
 		  next
@@ -150,6 +156,8 @@ Inherits ConsoleApplication
 		    
 		    Quit kErrorSort
 		  end if
+		  
+		  Print "Sorting" + if(Recursive, " recursively", "") + ": " + rootItem.Name
 		  
 		  rootItem.Sort(Recursive)
 		End Sub
