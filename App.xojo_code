@@ -122,7 +122,7 @@ Inherits ConsoleApplication
 		Protected Sub SortBy(name as String)
 		  using Xpt
 		  
-		  dim rootItem as XManifestItem = Manifest.FindByPathName(name)
+		  dim rootItem as XManifestItem = Manifest.FindByProjectPathName(name)
 		  if rootItem is nil then
 		    Print "`" + name + "` is not a sortable item"
 		    

@@ -6,6 +6,12 @@ Protected Class XContainer
 		  // Add an item to this container
 		  //
 		  
+		  using Xpt
+		  
+		  if Self isa XManifestItem then
+		    item.Parent = XManifestItem(Self)
+		  end if
+		  
 		  Children.Append item
 		End Sub
 	#tag EndMethod
@@ -23,7 +29,7 @@ Protected Class XContainer
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function FindByPathName(pathName as String) As Xpt.XManifestItem
+		Function FindByProjectPathName(projectPathName as String) As Xpt.XManifestItem
 		  //
 		  // Loop through all items looking for an item named `name`
 		  //
@@ -39,7 +45,7 @@ Protected Class XContainer
 		    // Item could be the one we are looking for
 		    //
 		    
-		    if item.PathName = pathName then
+		    if item.ProjectPathName = projectPathName then
 		      return item
 		    end if
 		    
@@ -47,7 +53,7 @@ Protected Class XContainer
 		    // Loop through each child of item checking it
 		    //
 		    
-		    dim childItem as XManifestItem = item.FindByPathName(pathName)
+		    dim childItem as XManifestItem = item.FindByProjectPathName(projectPathName)
 		    if childItem isa XManifestItem then
 		      return childItem
 		    end if

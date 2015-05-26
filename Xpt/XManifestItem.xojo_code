@@ -76,6 +76,10 @@ Inherits Xpt.XContainer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		Parent As Xpt.XManifestItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		ParentId As String
 	#tag EndProperty
 
@@ -109,6 +113,33 @@ Inherits Xpt.XContainer
 			End Get
 		#tag EndGetter
 		PathName As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  //
+			  // Path name as stored in the Project. The project path name and the path name
+			  // can be two different names.
+			  //
+			  
+			  using Xpt
+			  
+			  dim parts() as String
+			  dim p as XManifestItem = Parent
+			  
+			  while not (p is nil)
+			    parts.Insert 0, p.Name
+			    
+			    p = p.Parent
+			  wend
+			  
+			  parts.Append Name
+			  
+			  return Join(parts, ".")
+			End Get
+		#tag EndGetter
+		ProjectPathName As String
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0

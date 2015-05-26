@@ -45,7 +45,7 @@ MDICaption=
 DefaultEncoding=&h0
 AppIcon=xpt.xojo_resources;&h0
 OSXBundleID=com.cowgar.xpt
-DebuggerCommandLine=--sort=xojo-option-parser/OptionParser ~/Projects/Xojo/xpt/xpt.xojo_project
+DebuggerCommandLine=--sort=OptionParser ~/Projects/Xojo/xpt/xpt.xojo_project
 UseGDIPlus=False
 UseBuildsFolder=True
 IsWebProject=False
