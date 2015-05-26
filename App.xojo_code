@@ -125,7 +125,7 @@ Inherits ConsoleApplication
 		Protected Sub SortAll()
 		  using Xpt
 		  
-		  for each item as XManifestItem in Manifest.Children
+		  for each item as XManifestItem in Manifest
 		    if item.IsContainer then
 		      item.Sort(True)
 		    end if
@@ -211,7 +211,6 @@ Inherits ConsoleApplication
 		* Syncronize entries in multiple projects
 		* Update versioning
 		* Setting arbitrary manifest values
-		
 		
 	#tag EndNote
 

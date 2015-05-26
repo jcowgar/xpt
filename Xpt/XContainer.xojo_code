@@ -1,5 +1,6 @@
 #tag Class
 Protected Class XContainer
+Implements  xojo.Core.Iterable
 	#tag Method, Flags = &h0
 		Sub Add(item as Xpt.XManifestItem)
 		  //
@@ -40,7 +41,7 @@ Protected Class XContainer
 		  // Loop through each child item
 		  //
 		  
-		  for each item as XManifestItem in Children
+		  for each item as XManifestItem in Self
 		    //
 		    // Item could be the one we are looking for
 		    //
@@ -67,9 +68,15 @@ Protected Class XContainer
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function GetIterator() As xojo.Core.Iterator
+		  return new Xpt.XContainerIterator(Children)
+		End Function
+	#tag EndMethod
 
-	#tag Property, Flags = &h0
-		Children() As Xpt.XManifestItem
+
+	#tag Property, Flags = &h1
+		Protected Children() As Xpt.XManifestItem
 	#tag EndProperty
 
 

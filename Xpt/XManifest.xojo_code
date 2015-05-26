@@ -104,8 +104,8 @@ Inherits Xpt.XContainer
 		Sub Save(fh as FolderItem)
 		  dim tos as TextOutputStream = TextOutputStream.Create(fh)
 		  
-		  for i as Integer = 0 to Count - 1
-		    tos.WriteLine Child(i).ToString
+		  for each item as Xpt.XManifestItem in Self
+		    tos.WriteLine item.ToString
 		  next
 		  
 		  tos.Close

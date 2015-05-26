@@ -43,11 +43,9 @@ Inherits Xpt.XContainer
 		  using Xpt
 		  
 		  dim names() as String
-		  redim names(Children.Ubound)
 		  
-		  for i as Integer = 0 to Children.Ubound
-		    dim item as XManifestItem = Children(i)
-		    names(i) = item.Name
+		  for each item as XManifestItem in self
+		    names.Append item.Name
 		    
 		    if nest and item.IsContainer then
 		      item.Sort(True)
@@ -100,6 +98,12 @@ Inherits Xpt.XContainer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		#tag Note
+			POTENTIAL BUG: Property should be readonly. The problem is that the parent is not known
+			at parse time, only once all items have been created. This the XManifest class needs the
+			ability to set the Parent property after the object has already been created.
+			
+		#tag EndNote
 		Parent As Xpt.XManifestItem
 	#tag EndProperty
 

@@ -19,6 +19,7 @@ Class=OptionMissingKeyException;xojo-option-parser/OptionParser/OptionMissingKey
 Class=OptionParser;xojo-option-parser/OptionParser/OptionParser.xojo_xml_code;&hDB6EB43;&h7021126D;false
 Class=OptionParserException;xojo-option-parser/OptionParser/OptionParserException.xojo_xml_code;&h3E17FB1F;&h7021126D;false
 Class=OptionUnrecognizedKeyException;xojo-option-parser/OptionParser/OptionUnrecognizedKeyException.xojo_xml_code;&h5EEE032F;&h7021126D;false
+Class=XContainerIterator;Xpt/XContainerIterator.xojo_code;&h194357FF;&h6713AFFF;false
 MajorVersion=1
 MinorVersion=0
 SubVersion=0
