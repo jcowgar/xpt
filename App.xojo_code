@@ -198,6 +198,14 @@ Inherits ConsoleApplication
 		
 		`$ xpt --comment-to-loc myproject.xojo_project`
 		
+		Set versioning
+		
+		`$ xpt --version=1.2.3.4 myproject.xojo_project`
+		
+		Set any arbitary key/value pair
+		
+		`$ xpt --kv=WindowsName=xpt2.exe --kv=UseGDIPlus=True myproject.xojo_project`
+		
 		Various options can take a `--verbose` flag to report more information. For example, the
 		`--count-loc` option normally only reports the totals. If given the `--verbose` flag, it
 		will display the lines of code for each source file.
