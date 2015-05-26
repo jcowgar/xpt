@@ -13,6 +13,10 @@ Inherits ConsoleApplication
 		  const kOptionCommentToLoc = "comment-to-loc"
 		  const kOptionVerbose = "verbose"
 		  
+		  if args(0) = App.ExecutableFile.Name then
+		    args.Remove 0
+		  end if
+		  
 		  //
 		  // Parse our command line options
 		  //
@@ -33,6 +37,8 @@ Inherits ConsoleApplication
 		    parser.ShowHelp
 		    Quit kErrorUsage
 		  end if
+		  
+		  Print "Parsing manifest: " + fh.ShellPath
 		  
 		  dim sort as String = parser.StringValue(kOptionSort)
 		  dim sync as Boolean = parser.BooleanValue(kOptionSync, False)
@@ -76,7 +82,7 @@ Inherits ConsoleApplication
 		    // sorted order
 		    //
 		    
-		    NotImplemented(kOptionSort)
+		    SortBy(sort)
 		  end if
 		  
 		  //
@@ -91,6 +97,8 @@ Inherits ConsoleApplication
 		  if commentToLoc then
 		    NotImplemented(kOptionCommentToLoc)
 		  end if
+		  
+		  Manifest.Save(nil)
 		End Function
 	#tag EndEvent
 
@@ -106,6 +114,51 @@ Inherits ConsoleApplication
 		  
 		  Quit kErrorNotImplemented
 		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub SortBy(name as String)
+		  dim items() as Xpt.XManifestItem = Manifest.FindByName(name)
+		  
+		  //
+		  // Remove any non-container items, we do not need
+		  // to sort those items
+		  //
+		  
+		  for i as Integer = items.Ubound downto 0
+		    if not items(i).IsContainer then
+		      items.Remove i
+		    end if
+		  next
+		  
+		  if items.Ubound = -1 then
+		    Print "Could not find item `" + name + "`"
+		    
+		    Quit kErrorSort
+		    
+		  elseif items.Ubound > 0 then
+		    Print "More than one item exists named `" + name + "`"
+		    
+		    Quit kErrorSort
+		  end if
+		  
+		  if not (items(0) isa Xpt.XManifestPathItem) then
+		    Print "`" + name + "` is not a sortable item"
+		    
+		    Quit kErrorSort
+		  end if
+		  
+		  dim sortableItem as Xpt.XManifestPathItem = Xpt.XManifestPathItem(items(0))
+		  dim names() as String
+		  redim names(sortableItem.Child.Ubound)
+		  
+		  for i as Integer = 0 to sortableItem.Child.Ubound
+		    dim item as Xpt.XManifestPathItem = Xpt.XManifestPathItem(sortableItem.Child(i))
+		    names(i) = item.Name
+		  next
+		  
+		  names.SortWith(sortableItem.Child)
 		End Sub
 	#tag EndMethod
 
@@ -158,6 +211,9 @@ Inherits ConsoleApplication
 
 
 	#tag Constant, Name = kErrorNotImplemented, Type = Double, Dynamic = False, Default = \"254", Scope = Protected
+	#tag EndConstant
+
+	#tag Constant, Name = kErrorSort, Type = Double, Dynamic = False, Default = \"253", Scope = Protected
 	#tag EndConstant
 
 	#tag Constant, Name = kErrorUsage, Type = Double, Dynamic = False, Default = \"255", Scope = Protected
