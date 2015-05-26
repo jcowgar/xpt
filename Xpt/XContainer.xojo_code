@@ -75,22 +75,11 @@ Protected Class XContainer
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="Id"
-			Group="Behavior"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Key"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -106,16 +95,6 @@ Protected Class XContainer
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="ParentId"
-			Group="Behavior"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Path"
-			Group="Behavior"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
@@ -127,11 +106,6 @@ Protected Class XContainer
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="UnknownOne"
-			Group="Behavior"
-			Type="String"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

@@ -67,22 +67,25 @@ Inherits ConsoleApplication
 		  // Perform the operations in a logical order
 		  //
 		  
+		  //
+		  // We should sync first as it may add or remove items
+		  // that we would later want to sort or count
+		  //
+		  
 		  if sync then
-		    //
-		    // We should sync first as it may add or remove items
-		    // that we would later want to sort or count
-		    //
-		    
 		    NotImplemented(kOptionSync)
 		  end if
 		  
-		  if sort <> "" then
-		    //
-		    // We should sort before counting if necessary so that
-		    // any verbose output is displayed to the terminal in
-		    // sorted order
-		    //
+		  //
+		  // We should sort before counting if necessary so that
+		  // any verbose output is displayed to the terminal in
+		  // sorted order
+		  //
+		  
+		  if sort = "all" then
+		    SortAll()
 		    
+		  elseif sort <> "" then
 		    SortBy(sort)
 		  end if
 		  
@@ -119,6 +122,38 @@ Inherits ConsoleApplication
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub Sort(rootItem as Xpt.XManifestItem, nest as Boolean = False)
+		  using Xpt
+		  
+		  dim names() as String
+		  redim names(rootItem.Count - 1)
+		  
+		  for i as Integer = 0 to rootItem.Count - 1
+		    dim item as XManifestItem = rootItem.Child(i)
+		    names(i) = item.Name
+		    
+		    if nest and item.IsContainer then
+		      Sort(item, nest)
+		    end if
+		  next
+		  
+		  names.SortWith(rootItem.Children)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub SortAll()
+		  using Xpt
+		  
+		  for each item as XManifestItem in Manifest.Children
+		    if item.IsContainer then
+		      Sort(item, True)
+		    end if
+		  next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Sub SortBy(name as String)
 		  using Xpt
 		  
@@ -129,15 +164,7 @@ Inherits ConsoleApplication
 		    Quit kErrorSort
 		  end if
 		  
-		  dim names() as String
-		  redim names(rootItem.Count - 1)
-		  
-		  for i as Integer = 0 to rootItem.Count - 1
-		    dim item as XManifestItem = rootItem.Child(i)
-		    names(i) = item.Name
-		  next
-		  
-		  names.SortWith(rootItem.Children)
+		  Sort(rootItem)
 		End Sub
 	#tag EndMethod
 
