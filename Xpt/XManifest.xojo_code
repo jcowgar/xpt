@@ -1,45 +1,30 @@
 #tag Class
 Protected Class XManifest
+Inherits Xpt.XContainer
 	#tag Method, Flags = &h1
-		Protected Sub Add(item as XManifestItem)
-		  Child.Append item
+		Protected Sub Add(item as Xpt.XManifestItem)
+		  //
+		  // Add an item to the manifest.
+		  //
 		  
-		  if item isa XManifestPathItem then
-		    IdStore.Value(XManifestPathItem(item).Id) = item
+		  Super.Add(item)
+		  
+		  //
+		  // We need to be able to lookup quickly an item by it's Id, so
+		  // let's store a reference of the item by Id, but only if it
+		  // has an Id.
+		  //
+		  
+		  if item.HasId then
+		    IdLookup.Value(item.Id) = item
 		  end if
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Constructor()
-		  IdStore = new Dictionary
+		  IdLookup = new Dictionary
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function FindByName(name as String) As Xpt.XManifestItem()
-		  //
-		  // Loop through all items looking for an item named `name`
-		  //
-		  
-		  dim result() as Xpt.XManifestItem
-		  
-		  for i as Integer = 0 to Child.Ubound
-		    if Child(i) isa Xpt.XManifestPathItem then
-		      dim pathItem as Xpt.XManifestPathItem = Xpt.XManifestPathItem(Child(i))
-		      if pathItem.Name = name then
-		        result.Append pathItem
-		      end if
-		      
-		      dim item as Xpt.XManifestItem = pathItem.FindByName(name)
-		      if not (item is nil) then
-		        result.Append item
-		      end if
-		    end if
-		  next
-		  
-		  return result
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -48,7 +33,9 @@ Protected Class XManifest
 		  // Construct a new XManifest from the contents of `fh`
 		  //
 		  
-		  dim manifest as new Xpt.XManifest
+		  using Xpt
+		  
+		  dim manifest as new XManifest
 		  
 		  //
 		  // Parse the manifest file
@@ -85,16 +72,7 @@ Protected Class XManifest
 		      manifest.Add new XManifestWindow(key, parts)
 		      
 		    else
-		      //
-		      // We are not terribly interested in this but we need to know if
-		      // it is a nestable item or not, it may need to be sorted.
-		      //
-		      
-		      if parts.Ubound = 4 then
-		        manifest.Add new XManifestPathItem(key, parts)
-		      else
-		        manifest.Add new XManifestItem(key, value)
-		      end if
+		      manifest.Add new XManifestItem(key, parts)
 		    end if
 		  wend
 		  
@@ -104,22 +82,18 @@ Protected Class XManifest
 		  // Nest items that can be nested
 		  //
 		  
-		  for i as Integer = manifest.Child.Ubound downto 0
-		    dim item as Xpt.XManifestItem = manifest.Child(i)
+		  for i as Integer = manifest.Count - 1 downto 0
+		    dim item as XManifestItem = manifest.Child(i)
 		    
-		    select case item
-		    case isa XManifestPathItem
-		      dim pathItem as Xpt.XManifestPathItem = Xpt.XManifestPathItem(item)
-		      dim parentItem as Xpt.XManifestPathItem = manifest.IdStore.Lookup(pathItem.ParentId, nil)
-		      
+		    if item.HasParentId then
+		      dim parentItem as XManifestItem = manifest.IdLookup.Lookup(item.ParentId, nil)
 		      if parentItem is nil then
 		        continue
 		      end if
 		      
-		      parentItem.Child.Append pathItem
-		      
-		      manifest.Child.Remove i
-		    end select
+		      parentItem.Add item
+		      manifest.Children.Remove i
+		    end if
 		  next
 		  
 		  return manifest
@@ -128,19 +102,15 @@ Protected Class XManifest
 
 	#tag Method, Flags = &h0
 		Sub Save(fh as FolderItem)
-		  for i as Integer = 0 to Child.Ubound
+		  for i as Integer = 0 to Count - 1
 		    Print Child(i).ToString
 		  next
 		End Sub
 	#tag EndMethod
 
 
-	#tag Property, Flags = &h0
-		Child() As Xpt.XManifestItem
-	#tag EndProperty
-
 	#tag Property, Flags = &h1
-		Protected IdStore As Dictionary
+		Protected IdLookup As Dictionary
 	#tag EndProperty
 
 

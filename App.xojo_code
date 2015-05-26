@@ -44,7 +44,8 @@ Inherits ConsoleApplication
 		  dim sync as Boolean = parser.BooleanValue(kOptionSync, False)
 		  dim countLoc as Boolean = parser.BooleanValue(kOptionCountLoc, False)
 		  dim commentToLoc as Boolean = parser.BooleanValue(kOptionCommentToLoc, False)
-		  dim verbose as Boolean = parser.BooleanValue(kOptionVerbose, False)
+		  
+		  Verbose = parser.BooleanValue(kOptionVerbose, False)
 		  
 		  if sort = "" and not sync and not countLoc and not commentToLoc then
 		    //
@@ -98,7 +99,7 @@ Inherits ConsoleApplication
 		    NotImplemented(kOptionCommentToLoc)
 		  end if
 		  
-		  Manifest.Save(nil)
+		  Manifest.Save(fh)
 		End Function
 	#tag EndEvent
 
@@ -119,46 +120,24 @@ Inherits ConsoleApplication
 
 	#tag Method, Flags = &h1
 		Protected Sub SortBy(name as String)
-		  dim items() as Xpt.XManifestItem = Manifest.FindByName(name)
+		  using Xpt
 		  
-		  //
-		  // Remove any non-container items, we do not need
-		  // to sort those items
-		  //
-		  
-		  for i as Integer = items.Ubound downto 0
-		    if not items(i).IsContainer then
-		      items.Remove i
-		    end if
-		  next
-		  
-		  if items.Ubound = -1 then
-		    Print "Could not find item `" + name + "`"
-		    
-		    Quit kErrorSort
-		    
-		  elseif items.Ubound > 0 then
-		    Print "More than one item exists named `" + name + "`"
-		    
-		    Quit kErrorSort
-		  end if
-		  
-		  if not (items(0) isa Xpt.XManifestPathItem) then
+		  dim rootItem as XManifestItem = Manifest.FindByPathName(name)
+		  if rootItem is nil then
 		    Print "`" + name + "` is not a sortable item"
 		    
 		    Quit kErrorSort
 		  end if
 		  
-		  dim sortableItem as Xpt.XManifestPathItem = Xpt.XManifestPathItem(items(0))
 		  dim names() as String
-		  redim names(sortableItem.Child.Ubound)
+		  redim names(rootItem.Count - 1)
 		  
-		  for i as Integer = 0 to sortableItem.Child.Ubound
-		    dim item as Xpt.XManifestPathItem = Xpt.XManifestPathItem(sortableItem.Child(i))
+		  for i as Integer = 0 to rootItem.Count - 1
+		    dim item as XManifestItem = rootItem.Child(i)
 		    names(i) = item.Name
 		  next
 		  
-		  names.SortWith(sortableItem.Child)
+		  names.SortWith(rootItem.Children)
 		End Sub
 	#tag EndMethod
 
@@ -215,6 +194,10 @@ Inherits ConsoleApplication
 
 	#tag Property, Flags = &h1
 		Protected Manifest As Xpt.XManifest
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected Verbose As Boolean
 	#tag EndProperty
 
 

@@ -1,5 +1,5 @@
 #tag Class
 Protected Class XManifestWindow
-Inherits Xpt.XManifestPathItem
+Inherits Xpt.XManifestItem
 End Class
 #tag EndClass
