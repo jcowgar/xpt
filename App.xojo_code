@@ -160,21 +160,11 @@ Inherits ConsoleApplication
 		* Source code line counts
 		* Comment to code percentage
 		* Syncronize entries in multiple projects
+		* Update versioning
+		* Setting arbitrary manifest values
 		
 		Example uses
 		----------
-		
-		Sort all items in alphabetical order:
-		 
-		`$ xpt --sort=all myproject.xojo_project`
-		
-		Sort only the Models folder:
-		
-		`$ xpt --sort=Models myproject.xojo_project`
-		
-		Syncronize all "models" in multiple projects:
-		
-		`$ xpt --sync --folder=Models projectA/hello.xojo_project projectB/goodbye.xojo_project`
 		
 		Count the lines of source code:
 		
@@ -195,6 +185,62 @@ Inherits ConsoleApplication
 		Various options can take a `--verbose` flag to report more information. For example, the
 		`--count-loc` option normally only reports the totals. If given the `--verbose` flag, it
 		will display the lines of code for each source file.
+		
+	#tag EndNote
+
+	#tag Note, Name = Sorting
+		Sorting
+		------
+		
+		As projects grow and classes are added, folders and modules tend to get out of
+		order. Order helps one find a class quickly in the project tree. xpt can help
+		in this area by sorting Folders and Modules.
+		
+		xpt can sort just a given folder or module:
+		
+		`
+		$ xpt --sort=Models myproject.xojo_project
+		`
+		
+		The parameter to sort does not depend on physical path, but project path.
+		For example, say you have a folder named `Models` and under that another
+		folder named `Core.` If you wished to sort the `Core` models, you would:
+		
+		`
+		$xpt --sort=Models/Core myproject.xojo_project
+		`
+		
+		You can also sort all children in all Folders and Modules:
+		
+		`
+		$ xpt --sort=all myproject.xojo_project
+		`
+		
+	#tag EndNote
+
+	#tag Note, Name = Synchronizing
+		Some projects will share code. Continuing with our models example, say you have
+		a command line program that performs various operations with your data and also
+		a desktop application using the same models. It becomes cumbersome to maintain
+		a models list in both applications.
+		
+		You can synchronize your models between the two projects. Synchronizing the models
+		will take any entry in any project supplied that is a legitimate entry, i.e. the file
+		exists and copy it to the other projects that do not have it. For example, say you
+		add a new model to your console application named Person. Your desktop application
+		does not yet have that model. In addition, someone else has done work in the
+		desktop application adding a model named Child, but did not add it to the console
+		application.
+		
+		`
+		$ xpt --sync --folder=Models console/myproject.xojo_project desktop/myproject.xojo_project
+		`
+		
+		will see that Person exists (and is valid) in the console application but not the
+		desktop application. It will add an entry to the desktop application. Likewise, it will
+		see that Child was added to the console application but does not exist in the Desktop
+		application, thus adding an entry there.
+		
 		
 	#tag EndNote
 
