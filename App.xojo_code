@@ -11,6 +11,7 @@ Inherits ConsoleApplication
 		  const kOptionSync = "sync"
 		  const kOptionCountLoc = "count-loc"
 		  const kOptionCommentToLoc = "comment-to-loc"
+		  const kOptionSimulate = "simulate"
 		  const kOptionVerbose = "verbose"
 		  
 		  if args(0) = App.ExecutableFile.Name then
@@ -28,6 +29,7 @@ Inherits ConsoleApplication
 		  parser.AddOption new Option("", kOptionSync, "Synchronize items from various projects", Option.OptionType.Boolean)
 		  parser.AddOption new Option("", kOptionCountLoc, "Count the number of lines of code", Option.OptionType.Boolean)
 		  parser.AddOption new Option("", kOptionCommentToLoc, "Report on the comment to line of code ration", Option.OptionType.Boolean)
+		  parser.AddOption new Option("", kOptionSimulate, "Display the resulting manifest instead of saving it to disk", Option.OptionType.Boolean)
 		  parser.AddOption new Option("", kOptionVerbose, "Produce verbose output", Option.OptionType.Boolean)
 		  parser.Parse(args)
 		  
@@ -45,6 +47,7 @@ Inherits ConsoleApplication
 		  dim countLoc as Boolean = parser.BooleanValue(kOptionCountLoc, False)
 		  dim commentToLoc as Boolean = parser.BooleanValue(kOptionCommentToLoc, False)
 		  
+		  Simulate = parser.BooleanValue(kOptionSimulate, False)
 		  Verbose = parser.BooleanValue(kOptionVerbose, False)
 		  
 		  if sort = "" and not sync and not countLoc and not commentToLoc then
@@ -102,7 +105,8 @@ Inherits ConsoleApplication
 		    NotImplemented(kOptionCommentToLoc)
 		  end if
 		  
-		  Manifest.Save(fh)
+		  dim saveFh as FolderItem = if(Simulate, nil, fh)
+		  Manifest.Save(saveFh)
 		End Function
 	#tag EndEvent
 
@@ -301,6 +305,10 @@ Inherits ConsoleApplication
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
+	#tag Property, Flags = &h1
+		Protected Simulate As Boolean
+	#tag EndProperty
+
 		Protected Verbose As Boolean
 	#tag EndProperty
 

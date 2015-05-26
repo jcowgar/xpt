@@ -102,13 +102,30 @@ Inherits Xpt.XContainer
 
 	#tag Method, Flags = &h0
 		Sub Save(fh as FolderItem)
-		  dim tos as TextOutputStream = TextOutputStream.Create(fh)
+		  //
+		  // Save the manifest file to `fh`. If `fh` is `nil`, then the new Manifest
+		  // is echoed to the screen instead
+		  //
+		  
+		  dim tos as TextOutputStream
+		  
+		  if fh isa FolderItem then
+		    tos = TextOutputStream.Create(fh)
+		  end if
 		  
 		  for each item as Xpt.XManifestItem in Self
-		    tos.WriteLine item.ToString
+		    dim line as String = item.ToString
+		    
+		    if tos is nil then
+		      Print line
+		    else
+		      tos.WriteLine line
+		    end if
 		  next
 		  
-		  tos.Close
+		  if tos isa TextOutputStream then
+		    tos.Close
+		  end if
 		End Sub
 	#tag EndMethod
 
