@@ -30,7 +30,7 @@ Implements  xojo.Core.Iterable
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function FindByProjectPathName(projectPathName as String) As Xpt.XManifestItem
+		Function FindByProjectPath(ProjectPath as String) As Xpt.XManifestItem
 		  //
 		  // Loop through all items looking for an item named `name`
 		  //
@@ -46,7 +46,7 @@ Implements  xojo.Core.Iterable
 		    // Item could be the one we are looking for
 		    //
 		    
-		    if item.ProjectPathName = projectPathName then
+		    if item.ProjectPath = ProjectPath then
 		      return item
 		    end if
 		    
@@ -54,7 +54,7 @@ Implements  xojo.Core.Iterable
 		    // Loop through each child of item checking it
 		    //
 		    
-		    dim childItem as XManifestItem = item.FindByProjectPathName(projectPathName)
+		    dim childItem as XManifestItem = item.FindByProjectPath(ProjectPath)
 		    if childItem isa XManifestItem then
 		      return childItem
 		    end if

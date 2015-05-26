@@ -167,7 +167,7 @@ Inherits Xpt.XContainer
 			  return Join(parts, ".")
 			End Get
 		#tag EndGetter
-		ProjectPathName As String
+		ProjectPath As String
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
