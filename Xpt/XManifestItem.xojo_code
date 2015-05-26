@@ -35,6 +35,30 @@ Inherits Xpt.XContainer
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Sort(nest as Boolean = False)
+		  //
+		  // Sort the children by name
+		  //
+		  
+		  using Xpt
+		  
+		  dim names() as String
+		  redim names(Children.Ubound)
+		  
+		  for i as Integer = 0 to Children.Ubound
+		    dim item as XManifestItem = Children(i)
+		    names(i) = item.Name
+		    
+		    if nest and item.IsContainer then
+		      item.Sort(True)
+		    end if
+		  next
+		  
+		  names.SortWith(Children)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function ToString() As String
 		  dim result() as String
 		  
@@ -149,6 +173,11 @@ Inherits Xpt.XContainer
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="Id"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -175,6 +204,26 @@ Inherits Xpt.XContainer
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="ParentId"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Path"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PathName"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ProjectPathName"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
@@ -188,10 +237,9 @@ Inherits Xpt.XContainer
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Value"
+			Name="UnknownOne"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

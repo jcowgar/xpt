@@ -122,32 +122,12 @@ Inherits ConsoleApplication
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub Sort(rootItem as Xpt.XManifestItem, nest as Boolean = False)
-		  using Xpt
-		  
-		  dim names() as String
-		  redim names(rootItem.Count - 1)
-		  
-		  for i as Integer = 0 to rootItem.Count - 1
-		    dim item as XManifestItem = rootItem.Child(i)
-		    names(i) = item.Name
-		    
-		    if nest and item.IsContainer then
-		      Sort(item, nest)
-		    end if
-		  next
-		  
-		  names.SortWith(rootItem.Children)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Protected Sub SortAll()
 		  using Xpt
 		  
 		  for each item as XManifestItem in Manifest.Children
 		    if item.IsContainer then
-		      Sort(item, True)
+		      item.Sort(True)
 		    end if
 		  next
 		End Sub
@@ -164,7 +144,7 @@ Inherits ConsoleApplication
 		    Quit kErrorSort
 		  end if
 		  
-		  Sort(rootItem)
+		  rootItem.Sort()
 		End Sub
 	#tag EndMethod
 
