@@ -8,6 +8,12 @@ Protected Class XManifestItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function IsContainer() As Boolean
+		  return (Key = "Module" or Key = "Folder")
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function ToString() As String
 		  return Key + "=" + Value
 		End Function

@@ -17,6 +17,32 @@ Protected Class XManifest
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function FindByName(name as String) As Xpt.XManifestItem()
+		  //
+		  // Loop through all items looking for an item named `name`
+		  //
+		  
+		  dim result() as Xpt.XManifestItem
+		  
+		  for i as Integer = 0 to Child.Ubound
+		    if Child(i) isa Xpt.XManifestPathItem then
+		      dim pathItem as Xpt.XManifestPathItem = Xpt.XManifestPathItem(Child(i))
+		      if pathItem.Name = name then
+		        result.Append pathItem
+		      end if
+		      
+		      dim item as Xpt.XManifestItem = pathItem.FindByName(name)
+		      if not (item is nil) then
+		        result.Append item
+		      end if
+		    end if
+		  next
+		  
+		  return result
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		 Shared Function Parse(fh as FolderItem) As Xpt.XManifest
 		  //
 		  // Construct a new XManifest from the contents of `fh`
@@ -102,8 +128,6 @@ Protected Class XManifest
 
 	#tag Method, Flags = &h0
 		Sub Save(fh as FolderItem)
-		  break
-		  
 		  for i as Integer = 0 to Child.Ubound
 		    Print Child(i).ToString
 		  next

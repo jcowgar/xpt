@@ -16,6 +16,34 @@ Inherits Xpt.XManifestItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function FindByName(name as String) As Xpt.XManifestItem
+		  //
+		  // Loop through all items looking for an item named `name`
+		  //
+		  
+		  for i as Integer = 0 to Child.Ubound
+		    if Child(i) isa Xpt.XManifestPathItem then
+		      dim item as Xpt.XManifestItem = Child(i)
+		      
+		      if item isa Xpt.XManifestPathItem then
+		        dim pathItem as Xpt.XManifestPathItem = Xpt.XManifestPathItem(item)
+		        if pathItem.Name = name then
+		          return pathItem
+		        end if
+		        
+		        item = pathItem.FindByName(name)
+		        if not (item is nil) then
+		          return item
+		        end if
+		      end if
+		    end if
+		  next
+		  
+		  return nil
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function ToString() As String
 		  //
 		  
@@ -71,6 +99,7 @@ Inherits Xpt.XManifestItem
 			Name="Id"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -108,6 +137,7 @@ Inherits Xpt.XManifestItem
 			Name="Path"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
@@ -121,6 +151,11 @@ Inherits Xpt.XManifestItem
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UnknownOne"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Value"
