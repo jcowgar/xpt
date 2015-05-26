@@ -102,9 +102,13 @@ Inherits Xpt.XContainer
 
 	#tag Method, Flags = &h0
 		Sub Save(fh as FolderItem)
+		  dim tos as TextOutputStream = TextOutputStream.Create(fh)
+		  
 		  for i as Integer = 0 to Count - 1
-		    Print Child(i).ToString
+		    tos.WriteLine Child(i).ToString
 		  next
+		  
+		  tos.Close
 		End Sub
 	#tag EndMethod
 
