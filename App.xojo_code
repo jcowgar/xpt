@@ -149,6 +149,55 @@ Inherits ConsoleApplication
 	#tag EndMethod
 
 
+	#tag Note, Name = Code to Comment Ratio
+		An important ratio for your project is the Code to Comment
+		ratio. This is the number of lines of code compared to the
+		number of lines of comments.
+		
+		While there is no magical ratio, one should set a standard
+		for your project and try to achieve that value. The Code
+		to Comment ratio can be a health status of your project as
+		well. Is my Code to Comment ratio going down as I code,
+		remaining steady or increasing?
+		
+		All soruce code comments are counted. Note items are also
+		counted as comments.
+		
+		This ratio could change in different releases of `xpt` as the
+		method for counting lines of code may change affecting this
+		calculation indirectly.
+		
+	#tag EndNote
+
+	#tag Note, Name = Key/Value Pairs
+		In the `xojo_project` files, there are many miscellaneous Key/Value
+		pairs that one may wish to change. For example, to turn on Windows
+		GDI Plus from the command line, you could:
+		
+		`$ xpt --kv=UseGDIPlus=True myproject.xojo_project`
+		
+	#tag EndNote
+
+	#tag Note, Name = Lines of Code
+		While not as important as it once use to be, knowing how
+		many lines of code your project is can be useful and informative.
+		This, however, is hard to determine with Xojo because the
+		source files contain a lot of meta data.
+		
+		With `xpt` you can count the number of actual source lines.
+		
+		`$ xpt --count-loc myproject.xojo_project`
+		
+		will report on the actual code lines. We've tried to mimic
+		what would be counted in other languages, such as the
+		function signature. As time goes on, the actual method
+		of counting the lines of code may change. For example,
+		what should actually be counted on a Window? Ever method
+		and event for sure but what about controls? X, Y, Width and
+		Height? TabStop? etc...
+		
+	#tag EndNote
+
 	#tag Note, Name = Overview
 		Xojo Project Tool
 		============
@@ -163,35 +212,10 @@ Inherits ConsoleApplication
 		* Update versioning
 		* Setting arbitrary manifest values
 		
-		Example uses
-		----------
-		
-		Count the lines of source code:
-		
-		`$ xpt --count-loc myproject.xojo_project`
-		
-		Report on the comment to code ratio:
-		
-		`$ xpt --comment-to-loc myproject.xojo_project`
-		
-		Set versioning
-		
-		`$ xpt --version=1.2.3.4 myproject.xojo_project`
-		
-		Set any arbitary key/value pair
-		
-		`$ xpt --kv=WindowsName=xpt2.exe --kv=UseGDIPlus=True myproject.xojo_project`
-		
-		Various options can take a `--verbose` flag to report more information. For example, the
-		`--count-loc` option normally only reports the totals. If given the `--verbose` flag, it
-		will display the lines of code for each source file.
 		
 	#tag EndNote
 
 	#tag Note, Name = Sorting
-		Sorting
-		------
-		
 		As projects grow and classes are added, folders and modules tend to get out of
 		order. Order helps one find a class quickly in the project tree. xpt can help
 		in this area by sorting Folders and Modules.
@@ -242,6 +266,34 @@ Inherits ConsoleApplication
 		application, thus adding an entry there.
 		
 		
+	#tag EndNote
+
+	#tag Note, Name = Verbosity
+		Various options can take a `--verbose` flag to report more information. For example, the
+		`--count-loc` option normally only reports the totals. If given the `--verbose` flag, it
+		will display the lines of code for each source file.
+		
+	#tag EndNote
+
+	#tag Note, Name = Versioning
+		Many times in automated builds, it's nice to be able to set
+		the versioning from a shell script. `--version` does exactly
+		that.
+		
+		`$ xpt --version=1.2.3.4 myproject.xojo_project`
+		
+		sets Major = 1, Minor = 2, Bug = 3, Non-Release = 4
+		
+		You can also set the stage code:
+		
+		`$ xpt --stage-code=Development myproject.xojo_project`
+		
+		`--stage-code` can be:
+		
+		* Development
+		* Alpha
+		* Beta
+		* Final 
 	#tag EndNote
 
 
