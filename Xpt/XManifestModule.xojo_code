@@ -1,5 +1,5 @@
 #tag Class
 Protected Class XManifestModule
-Inherits Xpt.XManifestItem
+Inherits Xpt.XManifestSourceItem
 End Class
 #tag EndClass

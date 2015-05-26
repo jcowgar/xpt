@@ -17,6 +17,16 @@ Inherits Xpt.XContainer
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub GenerateStatistics(byref sourceCount as Integer, byref commentCount as Integer, printStatistics as Boolean)
+		  using Xpt
+		  
+		  for each item as XManifestItem in self
+		    item.GenerateStatistics(sourceCount, commentCount, printStatistics)
+		  next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function HasId() As Boolean
 		  return (Id <> "")
 		End Function
@@ -102,7 +112,6 @@ Inherits Xpt.XContainer
 			POTENTIAL BUG: Property should be readonly. The problem is that the parent is not known
 			at parse time, only once all items have been created. This the XManifest class needs the
 			ability to set the Parent property after the object has already been created.
-			
 		#tag EndNote
 		Parent As Xpt.XManifestItem
 	#tag EndProperty
@@ -227,7 +236,7 @@ Inherits Xpt.XContainer
 			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="ProjectPathName"
+			Name="ProjectPath"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"

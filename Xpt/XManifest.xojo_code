@@ -36,6 +36,7 @@ Inherits Xpt.XContainer
 		  using Xpt
 		  
 		  dim manifest as new XManifest
+		  dim manifestParentFolderItem as FolderItem = fh.Parent
 		  
 		  //
 		  // Parse the manifest file
@@ -63,13 +64,16 @@ Inherits Xpt.XContainer
 		      manifest.Add new XManifestFolder(key, parts)
 		      
 		    elseif line.InStr("Module=") = 1 then
-		      manifest.Add new XManifestModule(key, parts)
+		      manifest.Add new XManifestModule(manifestParentFolderItem, key, parts)
 		      
 		    elseif line.InStr("Class=") = 1 then
-		      manifest.Add new XManifestClass(key, parts)
+		      manifest.Add new XManifestClass(manifestParentFolderItem, key, parts)
+		      
+		    elseif line.InStr("Interface=") = 1 then
+		      manifest.Add new XManifestInterface(manifestParentFolderItem, key, parts)
 		      
 		    elseif line.InStr("Window=") = 1 then
-		      manifest.Add new XManifestWindow(key, parts)
+		      manifest.Add new XManifestWindow(manifestParentFolderItem, key, parts)
 		      
 		    else
 		      manifest.Add new XManifestItem(key, parts)

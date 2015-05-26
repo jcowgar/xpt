@@ -10,7 +10,6 @@ Inherits ConsoleApplication
 		  const kOptionSort = "sort"
 		  const kOptionSync = "sync"
 		  const kOptionCountLoc = "count-loc"
-		  const kOptionCommentToLoc = "comment-to-loc"
 		  const kOptionRecursive = "recursive"
 		  const kOptionSimulate = "simulate"
 		  const kOptionVerbose = "verbose"
@@ -29,7 +28,6 @@ Inherits ConsoleApplication
 		  parser.AddOption new Option("", kOptionSort, "Sort items in the project (Folder/Module name or all)", Option.OptionType.String)
 		  parser.AddOption new Option("", kOptionSync, "Synchronize items from various projects", Option.OptionType.Boolean)
 		  parser.AddOption new Option("", kOptionCountLoc, "Count the number of lines of code", Option.OptionType.Boolean)
-		  parser.AddOption new Option("", kOptionCommentToLoc, "Report on the comment to line of code ration", Option.OptionType.Boolean)
 		  parser.AddOption new Option("", kOptionRecursive, "Perform the operation recursively", Option.OptionType.Boolean)
 		  parser.AddOption new Option("", kOptionSimulate, "Display the resulting manifest instead of saving it to disk", Option.OptionType.Boolean)
 		  parser.AddOption new Option("", kOptionVerbose, "Produce verbose output", Option.OptionType.Boolean)
@@ -47,13 +45,14 @@ Inherits ConsoleApplication
 		  dim sort as String = parser.StringValue(kOptionSort)
 		  dim sync as Boolean = parser.BooleanValue(kOptionSync, False)
 		  dim countLoc as Boolean = parser.BooleanValue(kOptionCountLoc, False)
-		  dim commentToLoc as Boolean = parser.BooleanValue(kOptionCommentToLoc, False)
 		  
 		  Recursive = parser.BooleanValue(kOptionRecursive, False)
 		  Simulate = parser.BooleanValue(kOptionSimulate, False)
 		  Verbose = parser.BooleanValue(kOptionVerbose, False)
 		  
-		  if sort = "" and not sync and not countLoc and not commentToLoc then
+		  dim doSave as Boolean
+		  
+		  if sort = "" and not sync and not countLoc then
 		    //
 		    // The user did not select any operation
 		    //
@@ -91,8 +90,12 @@ Inherits ConsoleApplication
 		  if sort = "all" then
 		    SortAll()
 		    
+		    doSave = True
+		    
 		  elseif sort <> "" then
 		    SortBy(sort)
+		    
+		    doSave = True
 		  end if
 		  
 		  //
@@ -101,22 +104,91 @@ Inherits ConsoleApplication
 		  //
 		  
 		  if countLoc then
-		    NotImplemented(kOptionCountLoc)
+		    CountLines()
 		  end if
 		  
-		  if commentToLoc then
-		    NotImplemented(kOptionCommentToLoc)
-		  end if
+		  //
+		  // Only save the manifest if user requested some change
+		  //
 		  
-		  dim saveFh as FolderItem = if(Simulate, nil, fh)
-		  if not Simulate then
-		    Print "Saving manifest: " + saveFh.Name
+		  if doSave then
+		    dim saveFh as FolderItem = if(Simulate, nil, fh)
+		    
+		    if not Simulate then
+		      Print "Saving manifest: " + saveFh.Name
+		    end if
+		    
+		    Manifest.Save(saveFh)
 		  end if
-		  
-		  Manifest.Save(saveFh)
 		End Function
 	#tag EndEvent
 
+
+	#tag Method, Flags = &h1
+		Protected Sub CountLines()
+		  using Xpt
+		  
+		  const kSep = "--------------------------------------------------"
+		  
+		  if Verbose then
+		    dim codeLineHeader as String = "Code"
+		    dim commentLineHeader as String = "Comment"
+		    dim totalLineHeader as String = "Total"
+		    dim commentPercentHeader as String = "C-C%"
+		    dim fileHeader as String = "File"
+		    
+		    Print _
+		    codeLineHeader.PadRight(7) + " | " + _
+		    commentLineHeader.PadRight(7) + " | " + _
+		    totalLineHeader.PadRight(7) + " | " + _
+		    commentPercentHeader.PadRight(5) + " | " + _
+		    fileHeader
+		    Print kSep
+		  end if
+		  
+		  dim sourceCount as Integer
+		  dim commentCount as Integer
+		  dim totalCount as Integer
+		  dim commentPercent as Double
+		  
+		  for each item as XManifestItem in Manifest
+		    item.GenerateStatistics(sourceCount, commentCount, Verbose)
+		  next
+		  
+		  totalCount = sourceCount + commentCount
+		  commentPercent = commentCount / totalCount
+		  
+		  dim commentPercentString as String = commentPercent.FormatPercent(True)
+		  
+		  if commentCount = 0 then
+		    commentPercentString = "0%"
+		  end if
+		  
+		  dim codeLineCountString as String = sourceCount.FormatInteger.PadRight(7)
+		  dim commentLineCountString as String = commentCount.FormatInteger.PadRight(7)
+		  dim totalCountString as String = totalCount.FormatInteger.PadRight(7)
+		  
+		  if Verbose then
+		    Print kSep
+		    
+		    Print _
+		    codeLineCountString + " | " + _
+		    commentLineCountString + " | " + _
+		    totalCountString + " | " + _
+		    commentPercentString.PadRight(5) + " | " + _
+		    "Total"
+		    
+		  else
+		    Print " Source Line Count: " + codeLineCountString
+		    Print "Comment Line Count: " + commentLineCountString
+		    Print " Comment to Source: " + commentPercentString.PadRight(7)
+		    Print "       Total Count: " + totalCountString
+		  end if
+		  
+		  
+		  
+		End Sub
+	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Sub NotImplemented(key as String)

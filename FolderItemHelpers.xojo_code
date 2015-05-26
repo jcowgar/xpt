@@ -1,6 +1,28 @@
 #tag Module
 Protected Module FolderItemHelpers
 	#tag Method, Flags = &h0
+		Function Extension_MTC(Extends f As FolderItem) As String
+		  dim ext as string
+		  dim nme as string = f.Name
+		  
+		  dim parts() as string = nme.Split( "." )
+		  dim i as integer = parts.Ubound
+		  
+		  if i < 1 then
+		    // No dot
+		  elseif i = 1 and nme.Left( 1 ) = "." then
+		    // Not a true extension
+		  else
+		    ext = parts( i )
+		    if ext.InStr( " " ) <> 0  then ext = "" // An extension can't have a space
+		  end if
+		  
+		  return ext
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetRelativeFolderItem(path As String, relativeTo As FolderItem = Nil) As FolderItem
 		  Dim prefix As String = ""
 		  

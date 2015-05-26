@@ -1,11 +1,12 @@
 #tag Class
 Protected Class XManifestWindow
-Inherits Xpt.XManifestItem
+Inherits Xpt.XManifestSourceItem
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Id"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -37,21 +38,25 @@ Inherits Xpt.XManifestItem
 			Name="ParentId"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Path"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="PathName"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="ProjectPathName"
+			Name="ProjectPath"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
@@ -70,6 +75,7 @@ Inherits Xpt.XManifestItem
 			Name="UnknownOne"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

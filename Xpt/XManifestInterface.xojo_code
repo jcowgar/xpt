@@ -1,5 +1,5 @@
 #tag Class
-Protected Class XManifestClass
+Protected Class XManifestInterface
 Inherits Xpt.XManifestSourceItem
 	#tag ViewBehavior
 		#tag ViewProperty
@@ -56,6 +56,7 @@ Inherits Xpt.XManifestSourceItem
 			Name="ProjectPath"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
