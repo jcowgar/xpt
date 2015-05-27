@@ -21,10 +21,18 @@ Inherits Xpt.XContainer
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub Constructor()
+	#tag Method, Flags = &h1
+		Protected Sub Constructor(fh as FolderItem)
+		  Self.SourceFile = fh
+		  
 		  IdLookup = new Dictionary
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function File() As FolderItem
+		  return SourceFile
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -35,7 +43,7 @@ Inherits Xpt.XContainer
 		  
 		  using Xpt
 		  
-		  dim manifest as new XManifest
+		  dim manifest as new XManifest(fh)
 		  dim manifestParentFolderItem as FolderItem = fh.Parent
 		  
 		  //
@@ -105,37 +113,41 @@ Inherits Xpt.XContainer
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Save(fh as FolderItem)
+		Sub Save()
 		  //
 		  // Save the manifest file to `fh`. If `fh` is `nil`, then the new Manifest
 		  // is echoed to the screen instead
 		  //
 		  
-		  dim tos as TextOutputStream
+		  dim tos as TextOutputStream = TextOutputStream.Create(SourceFile)
+		  tos.Write ToString
+		  tos.Close
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ToString() As String
+		  //
+		  // Save the manifest file to `fh`. If `fh` is `nil`, then the new Manifest
+		  // is echoed to the screen instead
+		  //
 		  
-		  if fh isa FolderItem then
-		    tos = TextOutputStream.Create(fh)
-		  end if
-		  
+		  dim result() as String
 		  for each item as Xpt.XManifestItem in Self
-		    dim line as String = item.ToString
-		    
-		    if tos is nil then
-		      Print line
-		    else
-		      tos.WriteLine line
-		    end if
+		    result.Append item.ToString
 		  next
 		  
-		  if tos isa TextOutputStream then
-		    tos.Close
-		  end if
-		End Sub
+		  return Join(result, EndOfLine)
+		End Function
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h1
 		Protected IdLookup As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected SourceFile As FolderItem
 	#tag EndProperty
 
 

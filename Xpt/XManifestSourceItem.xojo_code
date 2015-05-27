@@ -25,6 +25,10 @@ Inherits Xpt.XManifestItem
 		  
 		  using Xpt
 		  
+		  //
+		  // Generate statistics first for myself
+		  //
+		  
 		  dim fileExtension as String = File.Extension_MTC
 		  dim textExtensions() as String = Array("xojo_code", "xojo_window")
 		  
@@ -57,6 +61,11 @@ Inherits Xpt.XManifestItem
 		    commentPercentString.PadRight(5) + " | " + _
 		    ProjectPath
 		  end if
+		  
+		  //
+		  // Now make sure that each of my children items get their
+		  // statistics included.
+		  //
 		  
 		  for each item as XManifestItem in Self
 		    item.GenerateStatistics(sourceCount, commentCount, printStatistics)

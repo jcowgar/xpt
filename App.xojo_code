@@ -14,6 +14,13 @@ Inherits ConsoleApplication
 		  const kOptionSimulate = "simulate"
 		  const kOptionVerbose = "verbose"
 		  
+		  //
+		  // Sometimes our first parameter is the executable name. This handling
+		  // should really be moved to OptionParser. OptionParser was including args(0)
+		  // (in this case, xpt) as an Extra. This was wrong, so remove it before passing
+		  // it to OptionParser.
+		  //
+		  
 		  if args(0) = App.ExecutableFile.Name then
 		    args.Remove 0
 		  end if
@@ -33,14 +40,9 @@ Inherits ConsoleApplication
 		  parser.AddOption new Option("", kOptionVerbose, "Produce verbose output", Option.OptionType.Boolean)
 		  parser.Parse(args)
 		  
-		  dim fh as FolderItem = GetRelativeFolderItem(parser.Extra(0))
-		  if fh is nil or not fh.IsReadable or not fh.IsWriteable then
-		    Print parser.Extra(0) + " is invalid, it must exist and be both readable and writeable."
-		    parser.ShowHelp
-		    Quit kErrorUsage
-		  end if
-		  
-		  Print "Parsing manifest: " + fh.ShellPath
+		  //
+		  // Copy our options to something a little more easily usable in our application.
+		  //
 		  
 		  dim sort as String = parser.StringValue(kOptionSort)
 		  dim sync as Boolean = parser.BooleanValue(kOptionSync, False)
@@ -50,7 +52,10 @@ Inherits ConsoleApplication
 		  Simulate = parser.BooleanValue(kOptionSimulate, False)
 		  Verbose = parser.BooleanValue(kOptionVerbose, False)
 		  
-		  dim doSave as Boolean
+		  //
+		  // Make sure that the user actually wants to do something. Calling
+		  // `xpt` with no options is rather useless.
+		  //
 		  
 		  if sort = "" and not sync and not countLoc then
 		    //
@@ -59,14 +64,45 @@ Inherits ConsoleApplication
 		    
 		    Print "You did not select any operation to perform"
 		    parser.ShowHelp
+		    
 		    Quit kErrorUsage
 		  end if
 		  
 		  //
-		  // Parse the manifest file
+		  // We only want to write the manifest if the user has performed a
+		  // change operation.
 		  //
 		  
-		  Manifest = Xpt.XManifest.Parse(fh)
+		  dim doSave as Boolean
+		  
+		  //
+		  // Loop through each of the extra arguments creating a XManifest instance
+		  // for each.
+		  //
+		  
+		  for manifestIndex as Integer = 0 to parser.Extra.Ubound
+		    //
+		    // Make sure we can access the manifest file
+		    //
+		    
+		    dim fh as FolderItem = GetRelativeFolderItem(parser.Extra(manifestIndex))
+		    if fh is nil or not fh.IsReadable or not fh.IsWriteable then
+		      Print parser.Extra(manifestIndex) + " is invalid, it must exist and be both readable and writeable."
+		      parser.ShowHelp
+		      Quit kErrorUsage
+		    end if
+		    
+		    //
+		    // Parse the manifest file
+		    //
+		    
+		    dim thisManifest as Xpt.XManifest = Xpt.XManifest.Parse(fh)
+		    Manifests.Append thisManifest
+		  next
+		  
+		  //
+		  // Now that we all manifest files parsed OK, let's do the real work
+		  //
 		  
 		  //
 		  // Perform the operations in a logical order
@@ -108,17 +144,21 @@ Inherits ConsoleApplication
 		  end if
 		  
 		  //
-		  // Only save the manifest if user requested some change
+		  // All work has been done on all manifest files, so let's loop through
+		  // each and save the manifests, only if the user has requested that
+		  // something be changed.
 		  //
 		  
 		  if doSave then
-		    dim saveFh as FolderItem = if(Simulate, nil, fh)
-		    
-		    if not Simulate then
-		      Print "Saving manifest: " + saveFh.Name
-		    end if
-		    
-		    Manifest.Save(saveFh)
+		    for manifestIndex as Integer = 0 to Manifests.Ubound
+		      dim thisManifest as Xpt.XManifest = Manifests(manifestIndex)
+		      
+		      if Simulate then
+		        Print thisManifest.ToString
+		      else
+		        thisManifest.Save
+		      end if
+		    next
 		  end if
 		End Function
 	#tag EndEvent
@@ -151,8 +191,10 @@ Inherits ConsoleApplication
 		  dim totalCount as Integer
 		  dim commentPercent as Double
 		  
-		  for each item as XManifestItem in Manifest
-		    item.GenerateStatistics(sourceCount, commentCount, Verbose)
+		  for manifestIndex as Integer = 0 to Manifests.Ubound
+		    for each item as XManifestItem in Manifests(manifestIndex)
+		      item.GenerateStatistics(sourceCount, commentCount, Verbose)
+		    next
 		  next
 		  
 		  totalCount = sourceCount + commentCount
@@ -184,9 +226,6 @@ Inherits ConsoleApplication
 		    Print " Comment to Source: " + commentPercentString.PadRight(7)
 		    Print "       Total Count: " + totalCountString
 		  end if
-		  
-		  
-		  
 		End Sub
 	#tag EndMethod
 
@@ -208,12 +247,14 @@ Inherits ConsoleApplication
 		Protected Sub SortAll()
 		  using Xpt
 		  
-		  for each item as XManifestItem in Manifest
-		    if item.IsContainer then
-		      Print "Sorting recursively: " + item.Name
-		      
-		      item.Sort(True)
-		    end if
+		  for manifestIndex as Integer = 0 to Manifests.Ubound
+		    for each item as XManifestItem in Manifests(manifestIndex)
+		      if item.IsContainer then
+		        Print "Sorting recursively: " + item.Name
+		        
+		        item.Sort(True)
+		      end if
+		    next
 		  next
 		End Sub
 	#tag EndMethod
@@ -222,16 +263,18 @@ Inherits ConsoleApplication
 		Protected Sub SortBy(name as String)
 		  using Xpt
 		  
-		  dim rootItem as XManifestItem = Manifest.FindByProjectPath(name)
-		  if rootItem is nil then
-		    Print "`" + name + "` is not a sortable item"
+		  for manifestIndex as Integer = 0 to Manifests.Ubound
+		    dim rootItem as XManifestItem = Manifests(manifestIndex).FindByProjectPath(name)
+		    if rootItem is nil then
+		      Print "`" + name + "` is not a sortable item"
+		      
+		      Quit kErrorSort
+		    end if
 		    
-		    Quit kErrorSort
-		  end if
-		  
-		  Print "Sorting" + if(Recursive, " recursively", "") + ": " + rootItem.Name
-		  
-		  rootItem.Sort(Recursive)
+		    Print "Sorting" + if(Recursive, " recursively", "") + ": " + rootItem.Name
+		    
+		    rootItem.Sort(Recursive)
+		  next
 		End Sub
 	#tag EndMethod
 
@@ -381,7 +424,7 @@ Inherits ConsoleApplication
 
 
 	#tag Property, Flags = &h1
-		Protected Manifest As Xpt.XManifest
+		Protected Manifests() As Xpt.XManifest
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
