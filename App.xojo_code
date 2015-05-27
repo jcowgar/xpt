@@ -17,8 +17,8 @@ Inherits ConsoleApplication
 		  //
 		  // Sometimes our first parameter is the executable name. This handling
 		  // should really be moved to OptionParser. OptionParser was including args(0)
-		  // (in this case, xpt) as an Extra. This was wrong, so remove it before passing
-		  // it to OptionParser.
+		  // (in this case, xpt) as an Extra. This was wrong, so remove it before
+		  // passing it to OptionParser.
 		  //
 		  
 		  if args(0) = App.ExecutableFile.Name then
@@ -86,7 +86,7 @@ Inherits ConsoleApplication
 		    //
 		    
 		    dim fh as FolderItem = GetRelativeFolderItem(parser.Extra(manifestIndex))
-		    if fh is nil or not fh.IsReadable or not fh.IsWriteable then
+		    if fh is Nil or not fh.IsReadable or not fh.IsWriteable then
 		      Print parser.Extra(manifestIndex) + " is invalid, it must exist and be both readable and writeable."
 		      parser.ShowHelp
 		      Quit kErrorUsage
@@ -102,10 +102,7 @@ Inherits ConsoleApplication
 		  
 		  //
 		  // Now that we all manifest files parsed OK, let's do the real work
-		  //
-		  
-		  //
-		  // Perform the operations in a logical order
+		  // in a logical order
 		  //
 		  
 		  //
@@ -115,6 +112,8 @@ Inherits ConsoleApplication
 		  
 		  if sync then
 		    NotImplemented(kOptionSync)
+		    
+		    doSave = True
 		  end if
 		  
 		  //
@@ -191,11 +190,62 @@ Inherits ConsoleApplication
 		  dim totalCount as Integer
 		  dim commentPercent as Double
 		  
+		  dim items() as Xpt.XManifestItem
+		  
 		  for manifestIndex as Integer = 0 to Manifests.Ubound
-		    for each item as XManifestItem in Manifests(manifestIndex)
-		      item.GenerateStatistics(sourceCount, commentCount, Verbose)
-		    next
+		    Manifests(manifestIndex).Gather(items)
 		  next
+		  
+		  //
+		  // We only care about XManifestSourceItem's for line counting and
+		  // at that, only unique items
+		  //
+		  
+		  if True then
+		    //
+		    // If statement to add some variable scope
+		    //
+		    
+		    dim dedupe as new Dictionary
+		    
+		    for itemIndex as Integer = 0 to items.Ubound
+		      if items(itemIndex) isa Xpt.XManifestSourceItem then
+		        dim sourceItem as Xpt.XManifestSourceItem = Xpt.XManifestSourceItem(items(itemIndex))
+		        dedupe.Value(sourceItem.File.NativePath) = sourceItem
+		      end if
+		    next
+		    
+		    //
+		    // Sort items in a decent order
+		    //
+		    
+		    dim deduped() as Variant = dedupe.Values
+		    redim items(deduped.Ubound)
+		    
+		    dim sortItemsBy() as String
+		    redim sortItemsBy(deduped.Ubound)
+		    
+		    for itemIndex as Integer = 0 to deduped.Ubound
+		      dim sourceItem as Xpt.XManifestSourceItem = deduped(itemIndex)
+		      items(itemIndex) = sourceItem
+		      sortItemsBy(itemIndex) = sourceItem.ProjectPath
+		    next
+		    
+		    sortItemsBy.SortWith(items)
+		  end if
+		  
+		  //
+		  // Count the lines in each item
+		  //
+		  
+		  for itemIndex as Integer = 0 to items.Ubound
+		    dim item as Xpt.XManifestSourceItem = Xpt.XManifestSourceItem(items(itemIndex))
+		    item.GenerateStatistics(sourceCount, commentCount, Verbose, False)
+		  next
+		  
+		  //
+		  // Compute summary values
+		  //
 		  
 		  totalCount = sourceCount + commentCount
 		  commentPercent = commentCount / totalCount
@@ -209,6 +259,10 @@ Inherits ConsoleApplication
 		  dim codeLineCountString as String = sourceCount.FormatInteger.PadRight(7)
 		  dim commentLineCountString as String = commentCount.FormatInteger.PadRight(7)
 		  dim totalCountString as String = totalCount.FormatInteger.PadRight(7)
+		  
+		  //
+		  // Display the summary
+		  //
 		  
 		  if Verbose then
 		    Print kSep

@@ -17,12 +17,14 @@ Inherits Xpt.XContainer
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub GenerateStatistics(byref sourceCount as Integer, byref commentCount as Integer, printStatistics as Boolean)
+		Sub GenerateStatistics(byref sourceCount as Integer, byref commentCount as Integer, printStatistics as Boolean, recurse as Boolean = True)
 		  using Xpt
 		  
-		  for each item as XManifestItem in self
-		    item.GenerateStatistics(sourceCount, commentCount, printStatistics)
-		  next
+		  if recurse then
+		    for each item as XManifestItem in self
+		      item.GenerateStatistics(sourceCount, commentCount, printStatistics, recurse)
+		    next
+		  end if
 		End Sub
 	#tag EndMethod
 

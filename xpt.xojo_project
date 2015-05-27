@@ -16,6 +16,7 @@ Class=XManifestWindow;Xpt/XManifestWindow.xojo_code;&h462EF7FF;&h6713AFFF;false
 Module=FolderItemHelpers;FolderItemHelpers.xojo_code;&h787C96C0;&h0;false
 Module=StringHelper;StringHelper.xojo_code;&h728DB016;&h0;false
 Folder=OptionParser;xojo-option-parser/OptionParser;&h7021126D;&h0;false
+Module=FormatCodePreferences;FormatCodePreferences.xojo_code;&hB4AE9E;&h0;false
 Class=Option;xojo-option-parser/OptionParser/Option.xojo_xml_code;&h4B9C1DDD;&h7021126D;false
 Class=OptionInvalidKeyValueException;xojo-option-parser/OptionParser/OptionInvalidKeyValueException.xojo_xml_code;&h39CF64D9;&h7021126D;false
 Class=OptionMissingKeyException;xojo-option-parser/OptionParser/OptionMissingKeyException.xojo_xml_code;&h58639532;&h7021126D;false

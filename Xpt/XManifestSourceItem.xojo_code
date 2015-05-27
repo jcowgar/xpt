@@ -14,7 +14,7 @@ Inherits Xpt.XManifestItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub GenerateStatistics(byref sourceCount as Integer, byref commentCount as Integer, printStatistics as Boolean)
+		Sub GenerateStatistics(byref sourceCount as Integer, byref commentCount as Integer, printStatistics as Boolean, recurse as Boolean = True)
 		  //
 		  // Tally the code line and comment line counts.
 		  //
@@ -67,9 +67,11 @@ Inherits Xpt.XManifestItem
 		  // statistics included.
 		  //
 		  
-		  for each item as XManifestItem in Self
-		    item.GenerateStatistics(sourceCount, commentCount, printStatistics)
-		  next
+		  if recurse then
+		    for each item as XManifestItem in Self
+		      item.GenerateStatistics(sourceCount, commentCount, printStatistics, recurse)
+		    next
+		  end if
 		End Sub
 	#tag EndMethod
 

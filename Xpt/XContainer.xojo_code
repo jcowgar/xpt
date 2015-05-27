@@ -1,6 +1,6 @@
 #tag Class
 Protected Class XContainer
-Implements  xojo.Core.Iterable
+Implements xojo.Core.Iterable
 	#tag Method, Flags = &h0
 		Sub Add(item as Xpt.XManifestItem)
 		  //
@@ -66,6 +66,18 @@ Implements  xojo.Core.Iterable
 		  
 		  return nil
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Gather(byref items() as Xpt.XManifestItem)
+		  if Self isa Xpt.XManifestItem then
+		    items.Append Xpt.XManifestItem(Self)
+		  end if
+		  
+		  for each item as Xpt.XManifestItem in Self
+		    item.Gather(items)
+		  next
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0

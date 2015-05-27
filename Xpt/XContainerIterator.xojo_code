@@ -40,13 +40,6 @@ Implements xojo.Core.Iterator
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="CurrentIndex"
-			Visible=true
-			Group="ID"
-			InitialValue="-2147483648"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Index"
 			Group="Behavior"
 			Type="Integer"
