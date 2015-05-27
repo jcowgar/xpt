@@ -10,6 +10,7 @@ Class=XManifestClass;Xpt/XManifestClass.xojo_code;&h5A5A17FF;&h6713AFFF;false
 Class=XManifestFolder;Xpt/XManifestFolder.xojo_code;&h7CA0B7FF;&h6713AFFF;false
 Class=XManifestInterface;Xpt/XManifestInterface.xojo_code;&h772617FF;&h6713AFFF;false
 Class=XManifestItem;Xpt/XManifestItem.xojo_code;&h333247FF;&h6713AFFF;false
+Class=XManifestMenu;Xpt/XManifestMenu.xojo_code;&h1A0BF7FF;&h6713AFFF;false
 Class=XManifestModule;Xpt/XManifestModule.xojo_code;&h4BABBFFF;&h6713AFFF;false
 Class=XManifestSourceItem;Xpt/XManifestSourceItem.xojo_code;&h382537FF;&h6713AFFF;false
 Class=XManifestWindow;Xpt/XManifestWindow.xojo_code;&h462EF7FF;&h6713AFFF;false

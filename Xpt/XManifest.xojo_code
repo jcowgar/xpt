@@ -83,6 +83,9 @@ Inherits Xpt.XContainer
 		    elseif line.InStr("Window=") = 1 then
 		      manifest.Add new XManifestWindow(manifestParentFolderItem, key, parts)
 		      
+		    elseif line.InStr("MenuBar=") = 1 then
+		      manifest.Add new XManifestMenu(manifestParentFolderItem, key, parts)
+		      
 		    else
 		      manifest.Add new XManifestItem(key, parts)
 		    end if

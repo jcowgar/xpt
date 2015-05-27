@@ -30,7 +30,7 @@ Inherits Xpt.XManifestItem
 		  //
 		  
 		  dim fileExtension as String = File.Extension_MTC
-		  dim textExtensions() as String = Array("xojo_code", "xojo_window")
+		  dim textExtensions() as String = Array("xojo_code", "xojo_window", "xojo_menu")
 		  
 		  if textExtensions.IndexOf(fileExtension) >= 0 then
 		    GenerateStatisticsXojoCode
@@ -206,6 +206,13 @@ Inherits Xpt.XManifestItem
 		      //
 		      
 		      CodeLineCount = CodeLineCount + 1
+		      
+		    elseif line.InStr("Begin Menu") = 1 then
+		      //
+		      // 2 lines of code, typically the menu definition and setting the title
+		      //
+		      
+		      CodeLineCount = CodeLineCount + 2
 		    end if
 		    
 		    if inSourceCode then
