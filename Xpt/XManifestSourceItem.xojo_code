@@ -26,6 +26,34 @@ Inherits Xpt.XManifestItem
 		  using Xpt
 		  
 		  //
+		  // Add some line counts for what type of item this is
+		  //
+		  
+		  select case Key
+		  case "Class"
+		    //
+		    // Class declaration and End Class
+		    //
+		    
+		    CodeLineCount = CodeLineCount + 2
+		    
+		  case "Module"
+		    //
+		    // Module declaration and End Module
+		    //
+		    
+		    CodeLineCount = CodeLineCount + 2
+		    
+		  case "Window"
+		    //
+		    // Window declaration and End Window
+		    //
+		    
+		    CodeLineCount = CodeLineCount + 2
+		    
+		  end select
+		  
+		  //
 		  // Generate statistics first for myself
 		  //
 		  
