@@ -119,6 +119,7 @@ Inherits Xpt.XManifestItem
 		    elseif line.InStr("<SourceLine>//") = 1 _
 		      or line.InStr("<SourceLine>'") = 1 _
 		      or line.InStr("<NoteLine>") = 1 _
+		      or line.InStr("<CodeDescription>") = 1 _
 		      then
 		      CommentLineCount = CommentLineCount + 1
 		      
@@ -144,6 +145,15 @@ Inherits Xpt.XManifestItem
 		  
 		  while not tis.EOF
 		    dim line as String = tis.ReadLine.Trim
+		    
+		    //
+		    // Anything can have a description. If it does, it is good for
+		    // one comment line.
+		    //
+		    
+		    if line.InStr("#tag") = 1 and line.InStr("Description =") > 0 then
+		      CommentLineCount = CommentLineCount + 1
+		    end if
 		    
 		    if line.InStr("#tag Method") = 1 _
 		      or line.InStr("#tag Event") = 1 _
@@ -218,6 +228,16 @@ Inherits Xpt.XManifestItem
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="CodeLineCount"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="CommentLineCount"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Id"
 			Group="Behavior"
