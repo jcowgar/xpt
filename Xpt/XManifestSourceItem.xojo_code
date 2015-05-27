@@ -25,7 +25,10 @@ Inherits Xpt.XManifestItem
 		  
 		  using Xpt
 		  
-		  if File.Extension_MTC = "xojo_code" then
+		  dim fileExtension as String = File.Extension_MTC
+		  dim textExtensions() as String = Array("xojo_code", "xojo_window")
+		  
+		  if textExtensions.IndexOf(fileExtension) >= 0 then
 		    GenerateStatisticsXojoCode
 		  else
 		    GenerateStatisticsXmlCode
