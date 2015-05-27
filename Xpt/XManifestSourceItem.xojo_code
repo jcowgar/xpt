@@ -70,7 +70,64 @@ Inherits Xpt.XManifestItem
 		  // Read `xml_code` files generating statistics
 		  //
 		  
+		  dim tis as TextInputStream = TextInputStream.Open(File)
 		  
+		  dim inProperty as Boolean
+		  
+		  while not tis.EOF
+		    dim line as String = tis.ReadLine.Trim
+		    
+		    if line.InStr("<Property>") = 1 then
+		      inProperty = True
+		      
+		      //
+		      // Properties are weird in the XML file. The definition and comment is included
+		      // as SourceLine tags. So, we know there will always be one line of code, so
+		      // we will treat everything in a property as a comment but will add one
+		      // to the code line count, and subtract one from the comment line count because
+		      // the initial code line will be counted as a comment.
+		      //
+		      
+		      CodeLineCount = CodeLineCount + 1
+		      CommentLineCount = CommentLineCount - 1
+		      
+		    elseif line.InStr("</Property>") = 1 then
+		      inProperty = False
+		      
+		    elseif inProperty and line.InStr("<SourceLine>") = 1 then
+		      CommentLineCount = CommentLineCount + 1
+		      
+		    elseif line.InStr("<Enumeration>") = 1 then
+		      //
+		      // Add 1 code line for the enum definition. Each item in the
+		      // enumeration will appear in their own SourceLine tag, so
+		      // they will be counted already.
+		      //
+		      
+		      CodeLineCount = CodeLineCount + 1
+		      
+		    elseif line.InStr("<Hook>") = 1 then
+		      //
+		      // Add 1 code line for each hook definition
+		      //
+		      
+		      CodeLineCount = CodeLineCount + 1
+		      
+		    elseif line.InStr("<Constant>") = 1 then
+		      CodeLineCount = CodeLineCount + 1
+		      
+		    elseif line.InStr("<SourceLine>//") = 1 _
+		      or line.InStr("<SourceLine>'") = 1 _
+		      or line.InStr("<NoteLine>") = 1 _
+		      then
+		      CommentLineCount = CommentLineCount + 1
+		      
+		    elseif line.InStr("<SourceLine>") = 1 then
+		      CodeLineCount = CodeLineCount + 1
+		    end if
+		  wend
+		  
+		  tis.Close
 		End Sub
 	#tag EndMethod
 
